@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton,  QFileDialog, QLabel, QVBoxLayout, QMainWindow, QLineEdit, QGridLayout, QHBoxLayout, QGroupBox
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton,  QFileDialog, QLabel, QVBoxLayout, QMainWindow, QLineEdit, QGridLayout, QHBoxLayout, QGroupBox, QRadioButton
 
 app = QApplication([])
 app.setApplicationName("ImpresionesDCC")
@@ -44,7 +44,10 @@ def load_file():
     print(path)
     if path:
         file_path = path
-        file_name.setText(f"Ruta del archivo cargado:\n{path}")
+        warn = ""
+        if path.split(".")[-1] != "pdf":
+            warn = "\n[ADVERTENCIA]: El archivo seleccionado no tiene extension .pdf, es posible que la impresión no funcione."
+        file_name.setText(f"Ruta del archivo cargado:\n{path}{warn}")
 
 load_file_button.clicked.connect(load_file)
 
@@ -55,11 +58,32 @@ load_file_layout.addWidget(file_name)
 load_file_group = QGroupBox("Selección del archivo a imprimir")
 load_file_group.setLayout(load_file_layout)
 
+salita_radio_button = QRadioButton("Salita")
+toqui_radio_button = QRadioButton("Toqui")
+salita_radio_button.setChecked(True)
+
 print_place_layout = QVBoxLayout()
+print_place_layout.addWidget(salita_radio_button)
+print_place_layout.addWidget(toqui_radio_button)
+
+print_place_group = QGroupBox("Lugar de impresión:")
+print_place_group.setLayout(print_place_layout)
+
+simple_radio_button = QRadioButton("Simple")
+doble_radio_button = QRadioButton("Doble")
+simple_radio_button.setChecked(True)
 
 print_faces_layout = QVBoxLayout()
+print_faces_layout.addWidget(simple_radio_button)
+print_faces_layout.addWidget(doble_radio_button)
+
+print_faces_group = QGroupBox("Impresión por cara:")
+print_faces_group.setLayout(print_faces_layout)
 
 print_options_layout = QGridLayout()
+print_options_layout.addWidget(print_place_group, 0, 0)
+print_options_layout.addWidget(print_faces_group, 0, 1)
+
 
 print_options_group = QGroupBox("Opciones de impresión")
 print_options_group.setLayout(print_options_layout)
