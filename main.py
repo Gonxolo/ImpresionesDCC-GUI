@@ -1,62 +1,20 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton,  QFileDialog, QLabel, QVBoxLayout, QMainWindow, QLineEdit, QGridLayout, QHBoxLayout, QGroupBox, QRadioButton
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QGridLayout, QGroupBox, QRadioButton
+
+from main_window import MainWindow
+from connection import Connection
+from status import ConnectionStatus
+from file_loader import  FileLoader
 
 app = QApplication([])
-app.setApplicationName("ImpresionesDCC")
+app.setApplicationName("ImpresionesDCC-GUI")
 
-server_field = QLineEdit("anakena.dcc.uchile.cl")
-user_field = QLineEdit()
-password_field = QLineEdit()
+server_connection = Connection("Conexión al servidor")
 
-server_label = QLabel("Servidor:")
-server_label.setBuddy(server_field)
-user_label = QLabel("Usuario:")
-user_label.setBuddy(user_field)
-password_label = QLabel("Contraseña:")
-password_label.setBuddy(password_field)
+connection_status = ConnectionStatus("Estado de la conexión")
 
-connection_layout = QVBoxLayout()
-connection_layout.addWidget(server_label)
-connection_layout.addWidget(server_field)
-connection_layout.addWidget(user_label)
-connection_layout.addWidget(user_field)
-connection_layout.addWidget(password_label)
-connection_layout.addWidget(password_field)
+server_connection.status_manager = connection_status
 
-connection_group = QGroupBox("Conexión al servidor")
-connection_group.setLayout(connection_layout)
-
-connection_status = QLabel("Aqui se señalará el estado de la conexion.\nExitosa, Fallida, Desconectadx, etc.\n(quizas se mostraran los errores con la conexion idk)")
-
-connection_status_layout = QVBoxLayout()
-connection_status_layout.addWidget(connection_status)
-
-connection_status_group = QGroupBox("Estado de la conexión")
-connection_status_group.setLayout(connection_status_layout)
-
-load_file_button = QPushButton("Load File...")
-file_path = None
-file_name = QLabel("No hay ningun archivo cargado.")
-
-def load_file():
-    global file_path
-    global file_name
-    path = QFileDialog.getOpenFileName(window, "Load")[0]
-    print(path)
-    if path:
-        file_path = path
-        warn = ""
-        if path.split(".")[-1] != "pdf":
-            warn = "\n[ADVERTENCIA]: El archivo seleccionado no tiene extension .pdf, es posible que la impresión no funcione."
-        file_name.setText(f"Ruta del archivo cargado:\n{path}{warn}")
-
-load_file_button.clicked.connect(load_file)
-
-load_file_layout = QVBoxLayout()
-load_file_layout.addWidget(load_file_button)
-load_file_layout.addWidget(file_name)
-
-load_file_group = QGroupBox("Selección del archivo a imprimir")
-load_file_group.setLayout(load_file_layout)
+file_loader = FileLoader("Selección del archivo a imprimir")
 
 salita_radio_button = QRadioButton("Salita")
 toqui_radio_button = QRadioButton("Toqui")
@@ -70,12 +28,14 @@ print_place_group = QGroupBox("Lugar de impresión:")
 print_place_group.setLayout(print_place_layout)
 
 simple_radio_button = QRadioButton("Simple")
-doble_radio_button = QRadioButton("Doble")
+doble_corto_radio_button = QRadioButton("Doble - Borde Corto")
+doble_largo_radio_button = QRadioButton("Doble - Borde Largo")
 simple_radio_button.setChecked(True)
 
 print_faces_layout = QVBoxLayout()
 print_faces_layout.addWidget(simple_radio_button)
-print_faces_layout.addWidget(doble_radio_button)
+print_faces_layout.addWidget(doble_corto_radio_button)
+print_faces_layout.addWidget(doble_largo_radio_button)
 
 print_faces_group = QGroupBox("Impresión por cara:")
 print_faces_group.setLayout(print_faces_layout)
@@ -86,25 +46,25 @@ print_options_layout.addWidget(print_faces_group, 0, 1)
 
 
 print_options_group = QGroupBox("Opciones de impresión")
+print_options_group.setEnabled(server_connection.status_manager.isConnected)
 print_options_group.setLayout(print_options_layout)
 
 print_button = QPushButton("Imprimir")
+print_button.setEnabled(server_connection.status_manager.isConnected)
 
 main_layout = QGridLayout()
-main_layout.addWidget(connection_group, 0, 0)
-main_layout.addWidget(connection_status_group, 0, 1)
-main_layout.addWidget(load_file_group, 1, 0, 1, 2)
-main_layout.addWidget(print_options_group, 2, 0, 1, 2)
+main_layout.addWidget(server_connection, 0, 0)
+main_layout.addWidget(connection_status, 0, 1)
+main_layout.addWidget(file_loader, 1, 0)
+main_layout.addWidget(print_options_group, 1, 1)
 main_layout.addWidget(print_button, 3, 0, 1, 2)
 
 widget_impresion = QWidget()
 widget_impresion.setLayout(main_layout)
 
-window = QMainWindow()
-window.setWindowTitle("ImpresionesDCC")
-window.setCentralWidget(widget_impresion)
-
+main_window = MainWindow("ImpresionesDCC-GUI")
+main_window.setCentralWidget(widget_impresion)
 
 if __name__ == '__main__':
-    window.show()
+    main_window.show()
     app.exec()
