@@ -10,7 +10,8 @@ class MainWindow(QMainWindow):
     
     def closeEvent(self, event) -> None:
         if self.server_connection is not None:
-            # self.server_connection.close()
-            # TODO: cerrar conexion con el servidor al salir
-            print("Conexion con el servidor cerrada.")
+            try:
+                self.server_connection.close()
+            except Exception as err:
+                print(err)
         event.accept()
