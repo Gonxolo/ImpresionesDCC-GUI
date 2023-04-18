@@ -18,7 +18,7 @@ class Worker(QObject):
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         try:
             self.ssh.connect(self.server_address, username=self.username, password=self.password)
-            self.status_manager.connection_success(self.server_adress, self.username)
+            self.status_manager.connection_success(self.server_address, self.username)
             time.sleep(5)
             self.ssh.close()
             self.status_manager.connection_closed()
