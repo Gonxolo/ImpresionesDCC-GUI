@@ -51,18 +51,18 @@ class PrintOptions(QGroupBox):
         outname = "out.ps"
         if self.salita_radio_button.isChecked():
             if self.simple_radio_button.isChecked():
-                self.print_command = f"pdf2ps {fname} {outname} && lpr -P hp-335 {outname}"
+                self.print_command = f"pdf2ps '{fname}' {outname} && lpr -P hp-335 {outname}"
             elif self.doble_largo_radio_button.isChecked():
-                self.print_command = f"pdf2ps {fname} {outname} && duplex {outname}|lpr -P hp-335"
+                self.print_command = f"pdf2ps '{fname}' {outname} && duplex {outname}|lpr -P hp-335"
             elif self.doble_corto_radio_button.isChecked():
-                self.print_command = f"pdf2ps {fname} {outname} && duplex -l {outname}|lpr -P hp-335"
+                self.print_command = f"pdf2ps '{fname}' {outname} && duplex -l {outname}|lpr -P hp-335"
         elif self.toqui_radio_button.isChecked():
             if self.simple_radio_button.isChecked():
-                self.print_command = f"pdf2ps {fname} {outname} && lpr {outname}"
+                self.print_command = f"pdf2ps '{fname}' {outname} && lpr {outname}"
             elif self.doble_largo_radio_button.isChecked():
-                self.print_command = f"pdf2ps {fname} {outname} && duplex {outname}|lpr"
+                self.print_command = f"pdf2ps '{fname}' {outname} && duplex {outname}|lpr"
             elif self.doble_corto_radio_button.isChecked():
-                self.print_command = f"pdf2ps {fname} {outname} && duplex -l {outname}|lpr"
+                self.print_command = f"pdf2ps '{fname}' {outname} && duplex -l {outname}|lpr"
         
         return self.print_command
 
